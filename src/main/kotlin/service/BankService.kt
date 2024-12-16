@@ -10,12 +10,12 @@ class BankService(private val fileManager: FileManagerUtil) {
     private var nextAccountNumber = accounts.keys.maxOrNull()?.plus(1) ?: 1L
     private val accountService: AccountService = AccountService()
 
-    fun createAccount(initialBalance: Double): Long {
+    fun createAccount(initialBalance: Double, password: String): Long {
         if (initialBalance < 0) {
             println("O saldo inicial não pode ser negativo.")
             return -1
         }
-        val account = Account(nextAccountNumber, initialBalance)
+        val account = Account(nextAccountNumber, initialBalance, password)
         accounts[nextAccountNumber] = account
         println("Conta criada com sucesso! Número da conta: ${account.id}, Saldo inicial: R$${account.balance}")
         return nextAccountNumber++
@@ -86,7 +86,7 @@ class BankService(private val fileManager: FileManagerUtil) {
         println("=== Fim do Resumo ===")
     }
 
-    private fun getAccount(accountNumber: Long): Account? {
+    fun getAccount(accountNumber: Long): Account? {
         return accounts[accountNumber]
     }
 
