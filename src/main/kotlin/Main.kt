@@ -1,12 +1,16 @@
 package org.eng.soft.two
 
 import org.eng.soft.two.service.BankService
+import org.eng.soft.two.service.SecurityService
 import org.eng.soft.two.utils.FileManagerUtil
+import org.eng.soft.two.utils.ReadingUtils
 import java.util.*
 
 fun main() {
     val bankSystem = BankService(FileManagerUtil("data/accounts.json"))
     val scanner = Scanner(System.`in`)
+    val securityService = SecurityService()
+    val readingUtils = ReadingUtils()
 
     while (true) {
         println("\n=== Sistema Bancário ===")
@@ -23,7 +27,19 @@ fun main() {
             1 -> {
                 print("Digite o saldo inicial: ")
                 val initialBalance = scanner.nextDouble()
-                bankSystem.createAccount(initialBalance)
+                scanner.nextLine()
+                var wrongPassword = true
+                var password = ""
+                while (wrongPassword) {
+                    print("Digite uma senha para a conta. A senha deve:\n" +
+                            "- Conter letras e números\n" +
+                            "- Ter no mínimo 5 caracteres.\n")
+
+                    password = scanner.nextLine()
+                    wrongPassword = securityService.checkPassword(password)
+                }
+
+                bankSystem.createAccount(initialBalance, password)
             }
             2 -> {
                 var description = ""
@@ -44,8 +60,18 @@ fun main() {
                 var description = ""
                 print("Digite o número da conta: ")
                 val accountNumber = scanner.nextLong()
+                var password: String
+                scanner.nextLine()
+                val account = bankSystem.getAccount(accountNumber)
+                if (account == null) {
+                    println("Conta inexistente")
+                    continue
+                }
+                password = readingUtils.readPassword(account)
+                if (password.isBlank()) continue
                 print("Digite o valor do saque: ")
                 val amount = scanner.nextDouble()
+                scanner.nextLine()
                 println("Gostaria de adicionar uma descrição para o saque?")
                 println("1. Sim\n2. Não")
                 if (scanner.nextInt() == 1) {
@@ -61,6 +87,15 @@ fun main() {
                 val fromAccount = scanner.nextLong()
                 print("Digite o número da conta de destino: ")
                 val toAccount = scanner.nextLong()
+                var password: String
+                scanner.nextLine()
+                val account = bankSystem.getAccount(fromAccount)
+                if (account == null) {
+                    println("Conta inexistente")
+                    continue
+                }
+                password = readingUtils.readPassword(account)
+                if (password.isBlank()) continue
                 print("Digite o valor da transferência: ")
                 val amount = scanner.nextDouble()
                 println("Gostaria de adicionar uma descrição para a transferência?")
@@ -75,6 +110,15 @@ fun main() {
             5 -> {
                 print("Digite o número da conta: ")
                 val accountNumber = scanner.nextLong()
+                var password: String
+                scanner.nextLine()
+                val account = bankSystem.getAccount(accountNumber)
+                if (account == null) {
+                    println("Conta inexistente")
+                    continue
+                }
+                password = readingUtils.readPassword(account)
+                if (password.isBlank()) continue
                 bankSystem.printAccountStatement(accountNumber)
             }
             6 -> bankSystem.printBankSummary()
