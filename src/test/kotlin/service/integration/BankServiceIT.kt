@@ -30,7 +30,7 @@ class BankServiceIT {
     fun `should create account with valid initial balance`() {
         val initialBalance = 100.0
 
-        bankService.createAccount(initialBalance)
+        bankService.createAccount(initialBalance, "myValidPassword123")
         bankService.closeBank()
 
         val fileResult = FileManagerUtil("data/test.json").loadAccounts()
@@ -42,7 +42,7 @@ class BankServiceIT {
     fun `should not create account with negative initial balance`() {
         val initialBalance = -50.0
 
-        bankService.createAccount(initialBalance)
+        bankService.createAccount(initialBalance, "myValidPassword123")
         bankService.closeBank()
 
         val fileResult = FileManagerUtil("data/test.json").loadAccounts()
@@ -51,7 +51,7 @@ class BankServiceIT {
 
     @Test
     fun `should deposit amount into valid account`() {
-        val account = Account(1L, 100.0)
+        val account = Account(1L, 100.0, "myValidPassword123")
         bankService.accounts[1L] = account
         val depositAmount = 50.0
 
@@ -75,7 +75,7 @@ class BankServiceIT {
 
     @Test
     fun `should withdraw amount from valid account`() {
-        val account = Account(1L, 100.0)
+        val account = Account(1L, 100.0, "myValidPassword123")
         bankService.accounts[1L] = account
         val withdrawAmount = 30.0
 
