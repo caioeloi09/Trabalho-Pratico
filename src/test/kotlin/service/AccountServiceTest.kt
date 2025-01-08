@@ -20,7 +20,8 @@ class AccountServiceTest {
         testAccount = Account(
             id = 1L,
             balance = 100.0,
-            transactions = mutableListOf()
+            transactions = mutableListOf(),
+            password = "password"
         )
     }
 

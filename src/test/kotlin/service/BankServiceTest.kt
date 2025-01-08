@@ -23,7 +23,7 @@ class BankServiceTest {
     @Test
     fun `should create account with valid initial balance`() {
         val initialBalance = 100.0
-        val accountNumber = bankService.createAccount(initialBalance)
+        val accountNumber = bankService.createAccount(initialBalance, "password1")
 
         assertEquals(1, bankService.accounts.size, "Deveria haver uma conta criada.")
         assertEquals(initialBalance, bankService.accounts[accountNumber]?.balance, "O saldo inicial está incorreto.")
@@ -32,7 +32,7 @@ class BankServiceTest {
     @Test
     fun `should not create account with negative initial balance`() {
         val initialBalance = -50.0
-        val accountNumber = bankService.createAccount(initialBalance)
+        val accountNumber = bankService.createAccount(initialBalance, "password1")
 
         assertEquals(-1, accountNumber, "Conta com saldo inicial negativo não deveria ser criada.")
         assertTrue(bankService.accounts.isEmpty(), "Nenhuma conta deveria ser criada.")
@@ -40,7 +40,7 @@ class BankServiceTest {
 
     @Test
     fun `should deposit amount into valid account`() {
-        val account = Account(1L, 100.0)
+        val account = Account(1L, 100.0, "password1")
         bankService.accounts[1L] = account
         val depositAmount = 50.0
 
@@ -58,7 +58,7 @@ class BankServiceTest {
 
     @Test
     fun `should withdraw amount from valid account`() {
-        val account = Account(1L, 100.0)
+        val account = Account(1L, 100.0, "password1")
         bankService.accounts[1L] = account
         val withdrawAmount = 30.0
 
@@ -69,7 +69,7 @@ class BankServiceTest {
 
     @Test
     fun `should not withdraw amount greater than account balance`() {
-        val account = Account(1L, 100.0)
+        val account = Account(1L, 100.0, "password1")
         bankService.accounts[1L] = account
 
         bankService.withdraw(1L, 150.0, "Saque inválido")
@@ -79,8 +79,8 @@ class BankServiceTest {
 
     @Test
     fun `should transfer amount between valid accounts`() {
-        val sourceAccount = Account(1L, 100.0)
-        val destinationAccount = Account(2L, 50.0)
+        val sourceAccount = Account(1L, 100.0, "password1")
+        val destinationAccount = Account(2L, 50.0, "password2")
         bankService.accounts[1L] = sourceAccount
         bankService.accounts[2L] = destinationAccount
 
@@ -93,8 +93,8 @@ class BankServiceTest {
 
     @Test
     fun `should not transfer amount if source account has insufficient funds`() {
-        val sourceAccount = Account(1L, 20.0)
-        val destinationAccount = Account(2L, 50.0)
+        val sourceAccount = Account(1L, 20.0, "password1")
+        val destinationAccount = Account(2L, 50.0, "password2")
         bankService.accounts[1L] = sourceAccount
         bankService.accounts[2L] = destinationAccount
 
@@ -107,9 +107,8 @@ class BankServiceTest {
 
     @Test
     fun `should print account statement for valid account`() {
-        val account = Account(1L, 100.0, mutableListOf())
+        val account = Account(1L, 100.0, mutableListOf(), "password1")
         bankService.accounts[1L] = account
-
 
         assertDoesNotThrow { bankService.printAccountStatement(1L) }
     }
