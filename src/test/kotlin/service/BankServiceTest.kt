@@ -1,6 +1,7 @@
 package service
 
-import io.mockk.*
+import io.mockk.every
+import io.mockk.mockk
 import org.eng.soft.two.entity.Account
 import org.eng.soft.two.service.BankService
 import org.eng.soft.two.utils.FileManagerUtil
